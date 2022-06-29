@@ -41,6 +41,19 @@ ead:
   broker:
     exchange:
       userEvent: ead.userevent
+      
+authuser:
+  refreshscope:
+    name: Cadu Guerra
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health    
+          
 eureka:
   client:
     service-url:
