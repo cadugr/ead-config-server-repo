@@ -1,0 +1,61 @@
+server:
+  port: ${PORT}
+  servlet:
+    context-path: '/ead-authuser/'
+  forward-headers-strategy: FRAMEWORK #para jogar os links do hateoas para o api-gateway  
+  
+spring:
+  application:
+    name: ead-authuser-service
+  datasource:
+    url: ${JDBC_DATABASE_URL}
+    username: ${JDBC_DATABASE_USERNAME}
+    password: ${JDBC_DATABASE_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        lob.non-contextual-creation: true
+    properties:
+      hibernate:
+        '[show_sql]': true
+  rabbitmq:
+    addresses: ${CLOUDAMQP_URL}
+    
+ead:
+  api:
+    url:
+      course: 'http://ead-course-service/ead-course' #de forma mais dinamica, passamos apenas o id da aplicação que queremos nos conectar e que está registrado no service-registry
+  broker:
+    exchange:
+      userEvent: ead.userevent
+      
+authuser:
+  refreshscope:
+    name: Cadu Guerra UPDATE!!!!!!!!!!!
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - refresh
+          - health
+    
+resilience4j:
+  circuitbreaker:
+    instances:
+      circuitbreakerInstance:
+        sliding-window-size: 30
+        permitted-number-of-calls-in-half-open-state: 2
+        sliding-window-type: TIME_BASED
+        minimum-number-of-calls: 2
+        wait-duration-in-open-state: 30s
+        failure-rate-threshold: 80
+  retry:
+    instances:
+      retryInstances:
+        maxRetryAttempts: 3
+        waitDuration: 5s          
+    
